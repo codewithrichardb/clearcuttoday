@@ -132,10 +132,10 @@ function WelcomeStep({ onNext }: { onNext: () => void }) {
     <div className="text-center">
       <h2 className="mb-4">Welcome to ClearCut</h2>
       <p className="lead mb-4">
-        Clarity for the emotionally overwhelmed. Whether it's heartbreak, burnout, or betrayal — we're here to help you reset.
+        Clarity for the emotionally overwhelmed. Whether {`it's`} heartbreak, burnout, or betrayal - {`we're`} here to help you reset.
       </p>
       <p className="text-muted mb-4">
-        You're not broken. You're just overwhelmed. Let's start your clarity journey.
+        {`You're`} not broken. {`You're`} just overwhelmed. {`Let's`} start your clarity journey.
       </p>
       <button 
         onClick={onNext}
