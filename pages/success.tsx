@@ -1,24 +1,26 @@
 // pages/success.js
-import Head from 'next/head';
+
+import Layout from "@/components/Layout";
+import NavBar from "@/components/NavBar";
 
 export default function Success() {
   return (
-    <>
-      <Head>
-        <title>Success - ClearCut</title>
-        <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-        />
-      </Head>
+    <Layout title="Success - ClearCutToday">
+      <NavBar />
       <div className="container py-5 text-center">
-        <img src="/logo.png" alt="ClearCut Logo" width="80" className="mb-4" />
-        <h1 className="display-6 fw-bold text-success">You're on the list!</h1>
-        <p className="lead">Thank you for signing up. We'll notify you when ClearCut launches.</p>
-        <a href="/ClearCut-Detox-Guide.pdf" className="btn btn-outline-primary mt-3" download>
-          Download Free Detox Guide
-        </a>
+        <h1 className="display-6 fw-bold text-success">
+          Welcome to ClearCutToday
+        </h1>
+        <p className="lead">
+          {`You're`} officially on the list. Check your inbox for your free
+          7-Day Detox Guide.
+        </p>
+        <p className="mb-4">
+          This is just the beginning. ClearCutToday is more than a emotional
+          detox tool, {`it's`} your full system for emotional clarity and
+          confidence.
+        </p>
       </div>
-    </>
+    </Layout>
   );
 }

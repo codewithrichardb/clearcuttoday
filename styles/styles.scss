@@ -1,0 +1,89 @@
+$primary: #8ab0bf;
+@import "~bootstrap/scss/bootstrap";
+
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
+body {
+  font-family: "Outfit", sans-serif;
+  font-weight: 400;
+}
+
+.custom-email-form {
+  outline: 0px !important;
+  border: 0px !important;
+}
+
+p {
+  color: rgb(67, 65, 65) !important;
+  font-weight: 300 !important;
+}
+
+.benefits-card {
+  height: 260px !important;
+  padding-inline: 5px !important;
+}
+
+.benefits-card-icons {
+  width: 50px !important;
+  height: 50px !important;
+  //opacity: .3 !important;
+  &:hover {
+    opacity: 1 !important;
+    color: #fff !important;
+  }
+}
+
+.reviews-card-icons {
+  width: 24px !important;
+  height: 30px !important;
+  background-color: #fff !important;
+  //opacity: .3 !important;
+  &:hover {
+    opacity: 1 !important;
+    color: #fff !important;
+  }
+}
+
+.btn {
+  &-white {
+    background-color: #fff !important;
+    color: #8ab0bf !important;
+  }
+}
+
+a {
+  text-decoration: none !important;
+}
+
+.list-item a,
+footer p {
+  font-size: 14px !important;
+  color: rgb(87, 84, 84) !important;
+  margin-bottom: 13px !important;
+  font-weight: 300 !important;
+}
+
+.avatar {
+  width: 44px !important;
+  height: 40px !important;
+}
+
+.dashboard-card {
+  height: 130px !important;
+}
+
+.recent-journals-card-icons {
+  width: 30px !important;
+  height: 33px !important;
+  &:hover {
+    opacity: 1 !important;
+    color: #8ab0bf !important;
+  }
+}
+
+.hero-img {
+  @media (max-width: 560px) {
+    width: 280px !important;
+    height: 200px !important;
+  }
+}
