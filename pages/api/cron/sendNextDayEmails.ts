@@ -1,32 +1,34 @@
-import dayjs from "dayjs";
 import { sendEmail } from "../contact";
-import { withDatabase } from "@/lib/db";
+import { findUsersToNotify, updateUser } from "@/lib/db";
 
 export async function runDailyEmailCronJob() {
   try {
-    await withDatabase(async (db) => {
-      const users = db.collection("users");
-      const now = new Date();
-
-      const candidates = await users.find({ day: { $lt: 7 } }).toArray();
-
-      for (const user of candidates) {
-        const nextDayTime = dayjs(user.registeredAt).add(user.day, "day");
-        if (dayjs(now).isAfter(nextDayTime)) {
-          try {
-            await sendEmail(user.email, user.day + 1);
-            await users.updateOne(
-              { email: user.email },
-              { $set: { day: user.day + 1 } }
-            );
-          } catch (error) {
-            console.error(`Error sending email to ${user.email}:`, error);
-            // Continue with next user even if one fails
-            continue;
-          }
-        }
+    // Get all users who should receive an email now based on their timezone
+    const users = await findUsersToNotify();
+    
+    // Process each user
+    for (const user of users) {
+      try {
+        // Send the next day's email with the site URL from environment variables
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com';
+        await sendEmail(user.email, user.day + 1, siteUrl);
+        
+        // Update user's day and lastEmailSent timestamp
+        await updateUser(user.email, { 
+          day: user.day + 1,
+          lastEmailSent: new Date()
+        });
+        
+        console.log(`Sent day ${user.day + 1} email to ${user.email}`);
+      } catch (error) {
+        console.error(`Error processing user ${user.email}:`, error);
+        // Continue with next user even if one fails
+        continue;
       }
-    });
+    }
+    
+    console.log(`Cron job completed. Processed ${users.length} users.`);
+    return { success: true, processed: users.length };
   } catch (error) {
     console.error("Error in runDailyEmailCronJob:", error);
     throw error; // Re-throw to be handled by the calling function

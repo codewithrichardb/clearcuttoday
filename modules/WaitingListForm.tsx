@@ -20,10 +20,16 @@ function WaitingListForm({
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      await axios.post("/api/contact", { email });
+      setStatus("")
+      const response = await axios.post("/api/contact", { email });
+      return response.data
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if(data.message == "Success"){
       router.push("/success");
+      } else {
+        setStatus(data.message)
+      }
     },
     onError: (error) => {
       if (error instanceof Error) {
@@ -71,7 +77,7 @@ function WaitingListForm({
           Check your inbox for the free guide.
         </small>
       </form>
-      {status && <div className="mt-3 text-center text-muted">{status}</div>}
+      {status && <div className="mt-2 text-center text-danger small">{status}</div>}
     </>
   );
 }

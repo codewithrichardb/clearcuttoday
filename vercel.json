@@ -1,9 +1,0 @@
-{
-    "cron": [
-        {
-            "path": "/api/cron/send-daily",
-            "period": "0 7 * * *",
-            "timezone": "America/New_York"
-        }
-    ]
-}
