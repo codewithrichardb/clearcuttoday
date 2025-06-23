@@ -2,8 +2,7 @@
     "crons": [
         {
             "path": "/api/cron/send-daily",
-            "schedule": "0 7 * * *",
-            "timezone": "America/New_York"
+            "schedule": "0 */3 * * *"
         }
     ]
 }
