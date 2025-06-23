@@ -9,8 +9,9 @@ export async function runDailyEmailCronJob() {
     // Process each user
     for (const user of users) {
       try {
-        // Send the next day's email
-        await sendEmail(user.email, user.day + 1);
+        // Send the next day's email with the site URL from environment variables
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com';
+        await sendEmail(user.email, user.day + 1, siteUrl);
         
         // Update user's day and lastEmailSent timestamp
         await updateUser(user.email, { 

@@ -20,7 +20,9 @@ export default async function handler(
     }
 
     await createUser(email);
-    await sendEmail(email, 1); // send Day 1 message immediately
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com';
+    const origin = req.headers.origin || siteUrl;
+    await sendEmail(email, 1, origin); // send Day 1 message immediately
     
     res.status(200).json({ message: "Success" });
   } catch (err) {
@@ -33,7 +35,7 @@ interface DailyContent {
   [key: number]: string;
 }
 
-export async function sendEmail(to: string, day: number) {
+export async function sendEmail(to: string, day: number, origin: string = 'https://yourdomain.com') {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -88,7 +90,7 @@ export async function sendEmail(to: string, day: number) {
     to,
     subject: subjects[day] || `ClearCut Daily – Day ${day}`,
     html: htmlTemplate(
-      wrapWithTracking(htmlBodies[day], to, day) ||
+      wrapWithTracking(htmlBodies[day], to, day, origin) ||
         `<p>This is Day ${day} of your detox. Keep showing up.</p>`
     ),
   });
