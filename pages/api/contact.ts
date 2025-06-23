@@ -20,7 +20,7 @@ export default async function handler(
     }
 
     await createUser(email);
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://clearcuttoday.com';
     const origin = req.headers.origin || siteUrl;
     await sendEmail(email, 1, origin); // send Day 1 message immediately
     
