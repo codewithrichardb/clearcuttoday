@@ -1,8 +1,24 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { FaShieldAlt } from "react-icons/fa";
+
+interface ApiResponse {
+  message: string;
+  error?: string;
+}
+
+interface ApiErrorResponse {
+  error: string;
+  details?: string;
+  allowedMethods?: string[];
+  requestDetails?: {
+    method?: string;
+    url?: string;
+    headers?: Record<string, string>;
+  };
+}
 //import {FaShield} from "react-icons/fa"
 
 function WaitingListForm({
@@ -18,21 +34,34 @@ function WaitingListForm({
   const [status, setStatus] = useState("");
   const router = useRouter();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending } = useMutation<ApiResponse, AxiosError<ApiErrorResponse>>({
     mutationFn: async () => {
-      setStatus("")
-      const response = await axios.post("/api/contact", { email });
-      return response.data
+      setStatus("");
+      const response = await axios.post<ApiResponse>(
+        "/api/contact",
+        { email },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          withCredentials: true
+        }
+      );
+      return response.data;
     },
-    onSuccess: (data) => {
-      if(data.message == "Success"){
-      router.push("/success");
+    onSuccess: (data: ApiResponse) => {
+      if (data.message === "Success") {
+        router.push("/success");
       } else {
-        setStatus(data.message)
+        setStatus(data.message || 'Unknown response from server');
       }
     },
-    onError: (error) => {
-      if (error instanceof Error) {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
+      console.error('Mutation error:', error);
+      if (error.response?.data?.error) {
+        setStatus(error.response.data.error);
+      } else if (error.message) {
         setStatus(error.message);
       } else {
         setStatus("Something went wrong. Please try again.");

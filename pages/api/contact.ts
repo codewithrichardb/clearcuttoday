@@ -1,35 +1,88 @@
-// /pages/api/contact.js
+// /pages/api/contact.ts
 import nodemailer from "nodemailer";
 import { wrapWithTracking } from "@/lib/sendEmailWithTracking";
 import { NextApiRequest, NextApiResponse } from "next";
 import { findUserByEmail, createUser } from "@/lib/db";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") return res.status(405).end();
+// Helper function to handle CORS
+type ApiHandler = (req: NextApiRequest, res: NextApiResponse) => Promise<void>;
 
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ error: "Email required" });
+const allowCors = (fn: ApiHandler) => async (req: NextApiRequest, res: NextApiResponse) => {
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-V, Authorization'
+  );
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  return await fn(req, res);
+};
+
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Debug log the request
+  console.log('Incoming request:', {
+    method: req.method,
+    url: req.url,
+    headers: req.headers,
+    body: req.body,
+    query: req.query
+  });
+
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    console.log(`Method ${req.method} not allowed`);
+    res.setHeader('Allow', ['POST']);
+    return res.status(405).json({ 
+      error: `Method ${req.method} Not Allowed`,
+      allowedMethods: ['POST'],
+      requestDetails: {
+        method: req.method,
+        url: req.url,
+        headers: req.headers
+      }
+    });
+  }
 
   try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
-      return res.status(200).json({ message: "Already registered" });
+      return res.status(200).json({ message: 'Already registered' });
     }
 
     await createUser(email);
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://clearcuttoday.com';
     const origin = req.headers.origin || siteUrl;
-    await sendEmail(email, 1, origin); // send Day 1 message immediately
     
-    res.status(200).json({ message: "Success" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+    try {
+      await sendEmail(email, 1, origin);
+      return res.status(200).json({ message: 'Success' });
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      return res.status(500).json({ error: 'Failed to send welcome email' });
+    }
+  } catch (error) {
+    console.error('Error in contact API:', error);
+    return res.status(500).json({ 
+      error: 'Server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 }
+
+export default allowCors(handler);
 
 interface DailyContent {
   [key: number]: string;
