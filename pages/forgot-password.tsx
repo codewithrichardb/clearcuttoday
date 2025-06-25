@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
+import NavBar from '@/components/NavBar';
+import Footer from '@/components/Footer';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -12,7 +14,7 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       setMessage('');
       setError('');
@@ -28,15 +30,16 @@ export default function ForgotPassword() {
 
   return (
     <Layout title="Reset Password - ClearCut">
+      <NavBar />
       <div className="container mt-5">
         <div className="row justify-content-center">
           <div className="col-md-6 col-lg-4">
-            <div className="card shadow">
+            <div className="card border-0 shadow rounded-3">
               <div className="card-body p-4">
-                <h2 className="text-center mb-4">Password Reset</h2>
+                <h3 className="text-center mb-4">Password Reset</h3>
                 {error && <div className="alert alert-danger">{error}</div>}
                 {message && <div className="alert alert-success">{message}</div>}
-                
+
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email</label>
@@ -49,16 +52,16 @@ export default function ForgotPassword() {
                       required
                     />
                   </div>
-                  
-                  <button 
+
+                  <button
                     disabled={loading}
-                    className="btn btn-primary w-100 mb-3"
+                    className="btn btn-primary w-100 mb-3 text-white"
                     type="submit"
                   >
                     {loading ? 'Sending...' : 'Reset Password'}
                   </button>
                 </form>
-                
+
                 <div className="text-center mt-3">
                   <Link href="/login" className="text-decoration-none">
                     Back to Login
@@ -69,6 +72,7 @@ export default function ForgotPassword() {
           </div>
         </div>
       </div>
+      <Footer />
     </Layout>
   );
 }

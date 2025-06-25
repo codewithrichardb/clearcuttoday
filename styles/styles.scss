@@ -1,10 +1,13 @@
 $primary: #8ab0bf;
 @import "~bootstrap/scss/bootstrap";
 
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+/* Using Next.js font optimization instead of direct import */
+:root {
+  --font-inter: 'Inter', sans-serif;
+}
 
 body {
-  font-family: "Outfit", sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-weight: 400;
 }
 

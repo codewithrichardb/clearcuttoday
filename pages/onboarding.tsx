@@ -5,7 +5,7 @@ import Layout from '@/components/Layout';
 
 // Dynamically import the OnboardingFlow component with SSR disabled
 const OnboardingFlow = dynamic(
-  () => import('@/components/onboarding/OnboardingFlow'),
+  () => import('@/components/onboarding/OnboardingFlow.new2'),
   { ssr: false }
 );
 

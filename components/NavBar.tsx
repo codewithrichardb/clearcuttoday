@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Dropdown } from "react-bootstrap";
-import { FaUserCircle, FaSignOutAlt, FaSignInAlt, FaUserPlus } from "react-icons/fa";
+import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 
 function NavBar() {
   const { currentUser, logout } = useAuth();
@@ -115,15 +115,15 @@ function NavBar() {
               <div className="d-flex gap-2">
                 <Link 
                   href="/login" 
-                  className="btn btn-outline-primary"
+                  className="btn border-0"
                 >
-                  <FaSignInAlt className="me-1" /> Login
+                 Login
                 </Link>
                 <Link 
                   href="/signup" 
-                  className="btn btn-primary"
+                  className="btn btn-primary text-white"
                 >
-                  <FaUserPlus className="me-1" /> Sign Up
+                   Sign Up
                 </Link>
               </div>
             )}

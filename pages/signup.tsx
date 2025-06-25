@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
+import Footer from '@/components/Footer';
+import { FaGoogle } from 'react-icons/fa';
+import NavBar from '@/components/NavBar';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -23,11 +26,13 @@ export default function Signup() {
       setError('');
       setLoading(true);
       await signup(email, password, displayName);
+      // Redirect to onboarding after successful signup
+      window.location.href = '/onboarding';
     } catch (error) {
-      setError('Failed to create an account');
+      setError('Failed to create an account. ' + (error as Error).message);
       console.error(error);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
@@ -35,8 +40,10 @@ export default function Signup() {
       setError('');
       setLoading(true);
       await signInWithGoogle();
+      // The AuthStateHandler will handle the redirect to /onboarding
+      // since we've added it to public paths
     } catch (error) {
-      setError('Failed to sign up with Google');
+      setError('Failed to sign up with Google: ' + (error as Error).message);
       console.error(error);
       setLoading(false);
     }
@@ -44,12 +51,13 @@ export default function Signup() {
 
   return (
     <Layout title="Sign Up - ClearCut">
+       <NavBar />
       <div className="container mt-5">
         <div className="row justify-content-center">
           <div className="col-md-6 col-lg-4">
-            <div className="card shadow">
+            <div className="card border-0 shadow rounded-3">
               <div className="card-body p-4">
-                <h2 className="text-center mb-4">Create Account</h2>
+                <h3 className="text-center mb-4">Create Account</h3>
                 {error && <div className="alert alert-danger">{error}</div>}
                 
                 <form onSubmit={handleSubmit}>
@@ -103,7 +111,7 @@ export default function Signup() {
                   
                   <button 
                     disabled={loading}
-                    className="btn btn-primary w-100 mb-3"
+                    className="btn btn-primary w-100 mb-3 text-white"
                     type="submit"
                   >
                     {loading ? 'Creating Account...' : 'Sign Up'}
@@ -115,12 +123,7 @@ export default function Signup() {
                     disabled={loading}
                     className="btn btn-outline-dark w-100 mb-3 d-flex align-items-center justify-content-center"
                   >
-                    <img 
-                      src="/google-logo.svg" 
-                      alt="Google" 
-                      width="20" 
-                      className="me-2"
-                    />
+                    <FaGoogle size={18} className='me-2' />
                     Continue with Google
                   </button>
                 </form>
@@ -136,6 +139,7 @@ export default function Signup() {
           </div>
         </div>
       </div>
+      <Footer />
     </Layout>
   );
 }
